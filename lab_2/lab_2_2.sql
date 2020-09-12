@@ -45,7 +45,8 @@ INSERT INTO dbo.Employee (	BusinessEntityID,
 	e.VacationHours,
 	e.SickLeaveHours,
 	e.ModifiedDate FROM HumanResources.Employee e 
-INNER JOIN Person.Person p on e.BusinessEntityID = p.BusinessEntityID  where p.EmailPromotion = 0 )
+INNER JOIN Person.Person p on e.BusinessEntityID = p.BusinessEntityID  
+WHERE p.EmailPromotion = 0 )
 
 ALTER TABLE dbo.Employee
 	ALTER COLUMN MaritalStatus NVARCHAR(1) NULL
