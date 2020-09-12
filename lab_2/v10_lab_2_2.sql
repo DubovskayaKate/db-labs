@@ -1,7 +1,9 @@
+-- Lab 2_2, V_10, Dubovskaya Kate, 751001
 USE AdventureWorks2012;
 
-exec sp_help 'HumanResources.Employee'
+-- exec sp_help 'HumanResources.Employee'
 
+-- Lab 2, Task 2, 1
 CREATE TABLE dbo.Employee(
 	BusinessEntityID	int NOT NULL,
 	NationalIDNumber	nvarchar(15) NOT NULL,
@@ -16,16 +18,23 @@ CREATE TABLE dbo.Employee(
 	ModifiedDate	datetime NOT NULL
 );
 
+-- Lab 2, Task 2, 2
 ALTER TABLE dbo.Employee
 	ADD ID bigint identity (0, 2);
 
+-- Lab 2, Task 2, 3
 ALTER TABLE dbo.Employee
 	ADD  CHECK (BirthDate > CONVERT (datetime,'19000101', 112) and BirthDate < GETDATE())
 
+-- Lab 2, Task 2, 4
 ALTER TABLE dbo.Employee
 	ADD DEFAULT (GETDATE()) for HireDate
 
-INSERT INTO dbo.Employee (	BusinessEntityID,
+
+
+-- Lab 2, Task 2, 5
+INSERT INTO dbo.Employee (	
+	BusinessEntityID,
 	NationalIDNumber,
 	LoginID,
 	JobTitle,
@@ -35,7 +44,8 @@ INSERT INTO dbo.Employee (	BusinessEntityID,
 	VacationHours,
 	SickLeaveHours,
 	ModifiedDate)
-(SELECT e.BusinessEntityID,
+(SELECT 
+	e.BusinessEntityID,
 	e.NationalIDNumber,
 	e.LoginID,
 	e.JobTitle,
@@ -44,14 +54,16 @@ INSERT INTO dbo.Employee (	BusinessEntityID,
 	e.Gender,
 	e.VacationHours,
 	e.SickLeaveHours,
-	e.ModifiedDate FROM HumanResources.Employee e 
+	e.ModifiedDate 
+FROM HumanResources.Employee e 
 INNER JOIN Person.Person p on e.BusinessEntityID = p.BusinessEntityID  
 WHERE p.EmailPromotion = 0 )
 
+-- Lab 2, Task 2, 6
 ALTER TABLE dbo.Employee
 	ALTER COLUMN MaritalStatus NVARCHAR(1) NULL
 
-exec sp_help 'dbo.Employee'
+-- exec sp_help 'dbo.Employee'
 
 
  
