@@ -24,11 +24,11 @@ ALTER TABLE dbo.Employee
 
 -- Lab 2, Task 2, 3
 ALTER TABLE dbo.Employee
-	ADD  CHECK (BirthDate > CONVERT (datetime,'19000101', 112) and BirthDate < GETDATE())
+	ADD CONSTRAINT birth_date_check CHECK (BirthDate > CONVERT (datetime,'19000101', 112) and BirthDate < GETDATE())
 
 -- Lab 2, Task 2, 4
 ALTER TABLE dbo.Employee
-	ADD DEFAULT (GETDATE()) for HireDate
+	ADD CONSTRAINT default_type DEFAULT (GETDATE()) for HireDate
 
 
 
@@ -58,6 +58,9 @@ INSERT INTO dbo.Employee (
 FROM HumanResources.Employee e 
 INNER JOIN Person.Person p on e.BusinessEntityID = p.BusinessEntityID  
 WHERE p.EmailPromotion = 0 )
+
+SELECT *
+FROM dbo.Employee
 
 -- Lab 2, Task 2, 6
 ALTER TABLE dbo.Employee

@@ -12,6 +12,8 @@
 #### 2.1.1
 ![result2.1.1.PNG](result2.1.1.PNG)
 #### 2.1.3
+![result2.1.2.PNG](result2.1.2.PNG)
+#### 2.1.3
 ![result2.1.3.PNG](result2.1.3.PNG)
 
 ## Задание 2
@@ -29,9 +31,10 @@
 #### 2.2.2-4
 ![result2.2.2-4](result2.2.2-4.PNG)
 #### 2.2.5
-![result2.2.2-4](result2.2.5.PNG)
+![result2.2.5](result2.2.5.PNG)
+![result2.2.5-1](result2.2.5-1.PNG)
 #### 2.2.6
-![result2.2.2-4](result2.2.6.PNG)
+![result2.2.6](result2.2.6.PNG)
 
 
 
