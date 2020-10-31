@@ -1,12 +1,10 @@
 USE AdventureWorks2012;
 
--- a) добавьте в таблицу dbo.Employee поле Name типа nvarchar размерностью 60 символов;
-
+-- Lab 3, Task 1, 1
 ALTER TABLE dbo.Employee
 	ADD Name NVARCHAR(60);
 
--- b) объявите табличную переменную с такой же структурой как dbo.Employee и заполните ее данными из dbo.Employee. Поле Name заполните данными таблицы Person.Person, из полей Title и FirstName. Если Title содержит null значение, замените его на ‘M.’;
-
+-- Lab 3, Task 1, 2
 DECLARE @Employee TABLE
 (
 	BusinessEntityID	int NOT NULL,
@@ -52,62 +50,63 @@ SELECT
 	CONCAT( (CASE WHEN p.Title IS NULL THEN 'M.' ELSE p.Title END ), p.FirstName)
 FROM dbo.Employee as e
 	LEFT JOIN Person.Person as p ON p.BusinessEntityID = e.BusinessEntityID;
-	
--- c) обновите поле Name в dbo.Employee данными из табличной переменной;
+
+-- Lab 3, Task 1, 3
 
 UPDATE dbo.Employee
-SET Name =eVar.Name
+SET Name = eVar.Name
 FROM dbo.Employee e
 INNER JOIN @Employee eVar ON  e.BusinessEntityID=eVar.BusinessEntityID;
 
-Select * from dbo.Employee;
-
--- d) удалите из dbo.Employee сотрудников, которые хотя бы раз меняли отдел (таблица HumanResources.EmployeeDepartmentHistory);
-
-select 
-	 e_edh1.DepartmentID, e_edh1.BusinessEntityID
-FROM 
-	(select 
-		 edh1.DepartmentID, e1.BusinessEntityID
-	FROM 
-		dbo.Employee e1
-	INNER JOIN HumanResources.EmployeeDepartmentHistory edh1 ON e1.BusinessEntityID= edh1.BusinessEntityID
-	) as e_edh1,
-	(select 
-		 edh1.DepartmentID, e1.BusinessEntityID
-	FROM 
-		dbo.Employee e1
-	INNER JOIN HumanResources.EmployeeDepartmentHistory edh1 ON e1.BusinessEntityID= edh1.BusinessEntityID
-	) as e_edh2
-
-WHERE 
-	e_edh1.DepartmentID != e_edh2.DepartmentID AND e_edh1.BusinessEntityID=e_edh2.BusinessEntityID
+--SELECT * FROM dbo.Employee
 
 
--- e) удалите поле Name из таблицы, удалите все созданные ограничения и значения по умолчанию.
-/*Имена ограничений вы можете найти в метаданных. Например:
+-- Lab 3, Task 1, 4
 
-SELECT *
-FROM AdventureWorks2012.INFORMATION_SCHEMA.CONSTRAINT_TABLE_USAGE
-WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Employee';
-Имена значений по умолчанию найдите самостоятельно, приведите код, которым пользовались для поиска;*/
+DELETE FROM Employee
+WHERE BusinessEntityID IN
+(
+	SELECT edh.BusinessEntityID
+	FROM HumanResources.EmployeeDepartmentHistory edh
+	WHERE edh.EndDate IS NOT NULL
+)
+
+SELECT * FROM dbo.Employee
 
 
-ALTER TABLE 
-	dbo.Employee 
+-- Lab 3, Task 1, 5
+
+
+ALTER TABLE dbo.Employee 
 DROP COLUMN 
-	Name,
-	ID;
+	Name;
 
--- ADD SCRIPT FOR LOOKING
+--exec sp_help 'dbo.Employee'
 
-ALTER TABLE
-    dbo.Employee 
-DROP CONSTRAINT
-    CK_Employee_BirthD,
-    DF_Employee_HireDa;
+DECLARE @query NVARCHAR(max) = N'' ;
+
+SELECT 
+	@query += N'ALTER TABLE dbo.Employee DROP CONSTRAINT ' + QUOTENAME(CONSTRAINT_NAME) + ';'
+FROM INFORMATION_SCHEMA.CONSTRAINT_TABLE_USAGE
+WHERE TABLE_SCHEMA = 'dbo'
+    AND TABLE_NAME = 'Employee';
+
+SELECT 
+	@query += 'ALTER TABLE dbo.Employee DROP CONSTRAINT ' + QUOTENAME(d.name) + ';'
+FROM sys.tables t
+JOIN sys.schemas s	ON t.schema_id = s.schema_id
+JOIN sys.default_constraints d	ON t.object_id = d.parent_object_id
+WHERE s.name = 'dbo'
+    AND t.name = 'Employee';
+
+print (@query);
+	
+execute (@query);
+
+exec sp_help 'dbo.Employee'
 
 
--- f) удалите таблицу dbo.Employee.
+-- Lab 3, Task 1, 6
 DROP TABLE
 	dbo.Employee
+
